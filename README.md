@@ -4,8 +4,14 @@ Dashboard that simulates the impact of Brazil's consumption tax reform (**IBS / 
 
 > 🇧🇷 Painel que simula o impacto da Reforma Tributária (IBS, CBS e Imposto Seletivo) na apuração de uma empresa, comparando com o sistema atual. [Resumo em português](#resumo-em-português) no fim deste arquivo.
 
+[![CI](https://github.com/grupomg-tech/dashreforma/actions/workflows/ci.yml/badge.svg)](https://github.com/grupomg-tech/dashreforma/actions/workflows/ci.yml)
+[![Live demo](https://img.shields.io/badge/demo-GitHub%20Pages-4e6ae9.svg)](https://grupomg-tech.github.io/dashreforma/)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Status: early stage](https://img.shields.io/badge/status-early%20stage-orange.svg)
+
+**Live demo:** <https://grupomg-tech.github.io/dashreforma/> — runs on a built-in fictional dataset; change the IBS, CBS and IS rates and click *Simular* to recalculate.
+
+![dashreforma screenshot](docs/screenshot.png)
 
 ## Why
 
@@ -21,11 +27,12 @@ Constitutional Amendment 132/2023 replaces PIS, COFINS, ICMS, ISS and part of IP
 - **Charts** — tax burden on purchases and sales, comparison per tax (current vs. reform) and tax composition for inbound and outbound operations.
 - **Top products** — the 10 most purchased and most sold products, with per-product value comparison and tax breakdown.
 - **Filters** — company, start and end period; filters can be preset through the URL query string.
+- **Demo mode** — a fictional catalogue of 12 products (basic-basket items at zero rate, reduced-rate goods, products subject to IS) lets you explore the dashboard without a backend.
 - **Auto refresh** — optional 30-second polling.
 
 ## Status
 
-Early stage. The dashboard is functional but the project is young: test coverage is minimal, the API base path is hard-coded and the UI is Portuguese-only. See the [roadmap](#roadmap). Issues and pull requests are welcome.
+Early stage. The dashboard is functional and the data mapping is covered by unit tests, but the project is young and the UI is Portuguese-only. See the [roadmap](#roadmap). Issues and pull requests are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Tech stack
 
@@ -42,6 +49,8 @@ npm install
 npm run dev      # dev server on http://localhost:8080
 ```
 
+Then open <http://localhost:8080/dashboards/dashboard-cliente/?demo=1> for the demo dataset, or point the app at your backend (see below).
+
 Other scripts:
 
 ```sh
@@ -51,12 +60,25 @@ npm run lint     # ESLint
 npm test         # Vitest
 ```
 
+## Configuration
+
+All settings are Vite environment variables (copy `.env.example` to `.env.local`):
+
+| Variable               | Default                                   | Description                                                   |
+| ---------------------- | ----------------------------------------- | ------------------------------------------------------------- |
+| `VITE_API_URL`         | `/dashboards/api/graficos/dados-relatorio/` | Endpoint that returns the report                            |
+| `VITE_BASE`            | `/static/dashboard-cliente/`              | Public path of the built assets                               |
+| `VITE_ROUTER_BASENAME` | `/dashboards/dashboard-cliente`           | Router `basename`; must match where the app is hosted         |
+| `VITE_DEMO`            | `false`                                   | `true` forces demo mode at build time (`?demo=1` does it per visit) |
+
+The defaults reproduce the original deployment, where the app is served under a sub-path of the backend.
+
 ## Backend API
 
 This repository contains the front end only. It expects a backend that serves:
 
 ```
-GET /dashboards/api/graficos/dados-relatorio/
+GET <VITE_API_URL>
 ```
 
 | Query parameter   | Example   | Description                     |
@@ -68,7 +90,7 @@ GET /dashboards/api/graficos/dados-relatorio/
 | `aliquota_cbs`    | `8.5`     | CBS rate (%)                    |
 | `aliquota_is`     | `0`       | Selective tax (IS) rate (%)     |
 
-Expected response (JSON, optionally wrapped in a `dados` key):
+Expected response (JSON, optionally wrapped in a `dados` key). The full contract is in [`src/lib/api-types.ts`](src/lib/api-types.ts); every block is optional and the UI hides what is missing.
 
 ```jsonc
 {
@@ -76,29 +98,36 @@ Expected response (JSON, optionally wrapped in a `dados` key):
     "apuracao_atual":   { "debitos": 0, "creditos": 0, "resultado": 0, "carga_tributaria_efetiva": 0 },
     "apuracao_reforma": { "debitos": 0, "creditos": 0, "resultado": 0, "carga_tributaria_efetiva": 0 }
   },
-  "entradas": { "produtos": [ /* purchases, each with valor_total and tax fields */ ] },
-  "saidas":   { "produtos": [ /* sales, same shape */ ] },
+  "entradas": {
+    "compra_bruta": 0, "creditos": 0, "compra_liquida": 0, "carga_tributaria_atual": 0,
+    "creditos_ibs_cbs": 0, "compra_total_reforma": 0, "carga_tributaria_reforma": 0,
+    "produtos": [
+      { "descricao": "…", "ncm": "…", "quantidade": 0, "valor_total": 0, "total_reforma": 0, "dif_total": 0,
+        "icms": 0, "pis": 0, "cofins": 0, "ibs": 0, "cbs": 0, "ibs_cbs": 0, "is": 0,
+        "creditos": 0, "creditos_reforma": 0 }
+    ]
+  },
+  "saidas": { /* same shape, with venda_* and debitos_* fields */ },
   "graficos": {
     // Chart.js-style objects: { labels: [], datasets: [{ data: [] }] }
-    "carga_tributaria_compras": {},
-    "carga_tributaria_vendas": {}
+    "carga_tributaria_compras": {}, "carga_tributaria_vendas": {},
+    "tributos_entradas": {}, "tributos_saidas": {},
+    "comparativo_entradas": {}, "comparativo_saidas": {}
   }
 }
 ```
 
-### Deployment paths
-
-The app is currently configured to be served under a sub-path of the backend:
-
-- static assets: `base: "/static/dashboard-cliente/"` in [`vite.config.ts`](vite.config.ts)
-- router: `basename="/dashboards/dashboard-cliente"` in [`src/App.tsx`](src/App.tsx)
-
-Change both if you host it elsewhere.
+`buildDemoReport()` in [`src/lib/demo.ts`](src/lib/demo.ts) produces a complete example of this payload.
 
 ## Project structure
 
 ```
 src/
+├── lib/
+│   ├── api-types.ts                 # API contract
+│   ├── report.ts                    # pure data-mapping functions (+ tests)
+│   ├── demo.ts                      # fictional dataset for demo mode (+ tests)
+│   └── config.ts                    # env-based configuration
 ├── pages/Index.tsx                  # data fetching and page layout
 └── components/dashboard/
     ├── FilterPanel.tsx              # company, period and rate filters
@@ -110,21 +139,20 @@ src/
 
 ## Roadmap
 
-- [ ] Configurable API URL and base path through environment variables
-- [ ] Mock data / demo mode so the dashboard runs without a backend
-- [ ] Typed API contract (replace `any`) and unit tests for the data mapping
-- [ ] Classification of products (NCM) into the reform's differentiated regimes
+- [x] Configurable API URL and base path through environment variables
+- [x] Demo mode so the dashboard runs without a backend
+- [x] Typed API contract and unit tests for the data mapping
+- [ ] Classification of products (NCM) into the reform's differentiated regimes, with legal references
+- [ ] Export the simulation (CSV / PDF)
 - [ ] English UI (i18n)
 
 ## Contributing
 
-1. Open an issue describing the bug or idea.
-2. Fork, create a branch, and make sure `npm run lint` and `npm test` pass.
-3. Open a pull request.
+See [CONTRIBUTING.md](CONTRIBUTING.md). Security issues: [SECURITY.md](SECURITY.md).
 
 ## Disclaimer
 
-This is a simulation tool. Results depend entirely on the data and rates supplied and do not constitute tax or legal advice.
+This is a simulation tool. Results depend entirely on the data and rates supplied and do not constitute tax or legal advice. The demo dataset is fictional and its tax model is deliberately simplified.
 
 ## License
 
@@ -136,4 +164,6 @@ This is a simulation tool. Results depend entirely on the data and rates supplie
 
 O `dashreforma` é um painel (React + TypeScript) que compara a apuração tributária de uma empresa no **sistema atual** com a apuração simulada na **Reforma Tributária** (IBS, CBS e Imposto Seletivo). Permite ajustar as alíquotas, filtrar por empresa e período, ver a variação de débitos, créditos, resultado e carga tributária, e analisar os produtos mais comprados e mais vendidos.
 
-Este repositório contém apenas o front end; os dados vêm de uma API própria (veja [Backend API](#backend-api)). Projeto em estágio inicial — contribuições são bem-vindas. Ferramenta de simulação: não substitui orientação tributária profissional.
+**Demo online:** <https://grupomg-tech.github.io/dashreforma/> (dados fictícios; altere as alíquotas e clique em *Simular*).
+
+Este repositório contém apenas o front end; os dados vêm de uma API própria (veja [Backend API](#backend-api)). Para rodar sem backend, abra a aplicação com `?demo=1`. Projeto em estágio inicial — contribuições são bem-vindas. Ferramenta de simulação: não substitui orientação tributária profissional.

@@ -4,8 +4,9 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
+// VITE_BASE overrides the public path (e.g. "/dashreforma/" on GitHub Pages).
 export default defineConfig(({ mode }) => ({
-  base: "/static/dashboard-cliente/",
+  base: process.env.VITE_BASE || "/static/dashboard-cliente/",
   server: {
 
     host: "::",
