@@ -2,14 +2,18 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle, FlaskConical } from "lucide-react";
 import FilterPanel from "@/components/dashboard/FilterPanel";
 import { ImpactCards, SummaryCards, ImpactBadge } from "@/components/dashboard/ImpactOverview";
 import TopProducts from "@/components/dashboard/TopProducts";
 import TaxCharts from "@/components/dashboard/TaxCharts";
-import { COLORS } from "@/components/dashboard/utils";
-
-const API_URL = "/dashboards/api/graficos/dados-relatorio/";
+import type { DadosRelatorio } from "@/lib/api-types";
+import { API_URL, isDemoMode } from "@/lib/config";
+import { buildDemoReport } from "@/lib/demo";
+import {
+  computeImpactDelta, deriveBurdenBar, deriveComparativo, derivePieData, parseApiResponse,
+} from "@/lib/report";
 
 const Index = () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -19,17 +23,25 @@ const Index = () => {
   const [aliquotaIbs, setAliquotaIbs] = useState(urlParams.get("aliquota_ibs") || "18.5");
   const [aliquotaCbs, setAliquotaCbs] = useState(urlParams.get("aliquota_cbs") || "8.5");
   const [aliquotaIs, setAliquotaIs] = useState(urlParams.get("aliquota_is") || "0");
-  const [data, setData] = useState<any>(null);
+  const [demo, setDemo] = useState(() => isDemoMode());
+  const [data, setData] = useState<DadosRelatorio | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [autoRefresh, setAutoRefresh] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
+      if (demo) {
+        setData(buildDemoReport({
+          ibs: parseFloat(aliquotaIbs) || 0,
+          cbs: parseFloat(aliquotaCbs) || 0,
+          is: parseFloat(aliquotaIs) || 0,
+        }));
+        return;
+      }
       const params = new URLSearchParams({
         empresa,
         periodo_inicial: periodoInicial,
@@ -44,24 +56,21 @@ const Index = () => {
       });
 
       if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
-      const text = await res.text();
-      if (text.startsWith("<!") || text.startsWith("<html")) {
-        throw new Error("API retornou HTML em vez de JSON. Verifique se o servidor está rodando.");
-      }
-      const json = JSON.parse(text);
-      setData(json?.dados || json);
-    } catch (e: any) {
+      setData(parseApiResponse(await res.text()));
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "";
       setError(
-        e.message === "Failed to fetch"
+        message === "Failed to fetch"
           ? "Não foi possível conectar à API. Verifique se o servidor está rodando."
-          : e.message || "Erro ao buscar dados"
+          : message || "Erro ao buscar dados"
       );
     } finally {
       setLoading(false);
     }
-  }, [empresa, periodoInicial, periodoFinal, aliquotaIbs, aliquotaCbs, aliquotaIs]);
+  }, [demo, empresa, periodoInicial, periodoFinal, aliquotaIbs, aliquotaCbs, aliquotaIs]);
 
-  useEffect(() => { fetchData(); }, []);
+  // Fetch once on mount and whenever demo mode is toggled.
+  useEffect(() => { fetchData(); }, [demo]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (autoRefresh) {
@@ -79,61 +88,13 @@ const Index = () => {
   const produtosEntrada = data?.entradas?.produtos || [];
   const produtosSaida = data?.saidas?.produtos || [];
 
-  const impactoDelta = resumoAtual && resumoReforma ? {
-    debitos: resumoReforma.debitos - resumoAtual.debitos,
-    creditos: resumoReforma.creditos - resumoAtual.creditos,
-    resultado: resumoReforma.resultado - resumoAtual.resultado,
-    carga: resumoReforma.carga_tributaria_efetiva - resumoAtual.carga_tributaria_efetiva,
-  } : null;
-
-  // Derived chart data
-  const barDataCompras = graficos?.carga_tributaria_compras?.datasets?.[0]?.data
-    ? [{ name: "Compras", "Sistema Atual": graficos.carga_tributaria_compras.datasets[0].data[0], Reforma: graficos.carga_tributaria_compras.datasets[0].data[1] }]
-    : data?.entradas
-      ? [{ name: "Compras", "Sistema Atual": data.entradas.carga_tributaria_atual || 0, Reforma: data.entradas.carga_tributaria_reforma || 0 }]
-      : [];
-
-  const barDataVendas = graficos?.carga_tributaria_vendas?.datasets?.[0]?.data
-    ? [{ name: "Vendas", "Sistema Atual": graficos.carga_tributaria_vendas.datasets[0].data[0], Reforma: graficos.carga_tributaria_vendas.datasets[0].data[1] }]
-    : data?.saidas
-      ? [{ name: "Vendas", "Sistema Atual": data.saidas.carga_tributaria_atual || 0, Reforma: data.saidas.carga_tributaria_reforma || 0 }]
-      : [];
-
-  const derivePieData = (source: string, produtos: any[]) => {
-    const g = graficos?.[source];
-    if (g) {
-      return (g.labels || []).map((label: string, i: number) => ({
-        name: label, value: g.datasets?.[0]?.data?.[i] || 0,
-      }));
-    }
-    if (produtos.length > 0) {
-      const totals: Record<string, number> = { ICMS: 0, PIS: 0, COFINS: 0, "IBS/CBS": 0 };
-      produtos.forEach((p: any) => {
-        totals.ICMS += p.icms || 0;
-        totals.PIS += p.pis || 0;
-        totals.COFINS += p.cofins || 0;
-        totals["IBS/CBS"] += p.ibs_cbs || 0;
-      });
-      return Object.entries(totals).filter(([, v]) => v > 0).map(([name, value]) => ({ name, value }));
-    }
-    return [];
-  };
-
-  const pieDataEntradas = derivePieData("tributos_entradas", produtosEntrada);
-  const pieDataSaidas = derivePieData("tributos_saidas", produtosSaida);
-
-  const deriveComparativo = (source: string) => {
-    const g = graficos?.[source];
-    if (!g) return [];
-    return (g.labels || []).map((label: string, i: number) => ({
-      tributo: label,
-      Atual: g.datasets?.[0]?.data?.[i] || 0,
-      Reforma: g.datasets?.[1]?.data?.[i] || 0,
-    }));
-  };
-
-  const comparativoEntradas = deriveComparativo("comparativo_entradas");
-  const comparativoSaidas = deriveComparativo("comparativo_saidas");
+  const impactoDelta = computeImpactDelta(resumoAtual, resumoReforma);
+  const barDataCompras = deriveBurdenBar("Compras", graficos.carga_tributaria_compras, data?.entradas);
+  const barDataVendas = deriveBurdenBar("Vendas", graficos.carga_tributaria_vendas, data?.saidas);
+  const pieDataEntradas = derivePieData(graficos.tributos_entradas, produtosEntrada);
+  const pieDataSaidas = derivePieData(graficos.tributos_saidas, produtosSaida);
+  const comparativoEntradas = deriveComparativo(graficos.comparativo_entradas);
+  const comparativoSaidas = deriveComparativo(graficos.comparativo_saidas);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
@@ -156,6 +117,17 @@ const Index = () => {
       </header>
 
       <main className="container mx-auto px-4 py-6 space-y-6">
+        {/* Demo banner */}
+        {demo && (
+          <div role="status" className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-800">
+            <FlaskConical className="h-4 w-4 shrink-0" />
+            <span>
+              <strong>Modo demonstração:</strong> dados fictícios gerados localmente. Altere as alíquotas e clique em
+              consultar para recalcular a simulação.
+            </span>
+          </div>
+        )}
+
         {/* Filters */}
         <FilterPanel
           empresa={empresa} setEmpresa={setEmpresa}
@@ -186,8 +158,13 @@ const Index = () => {
         {error && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
             <Card className="border-red-200 bg-red-50 shadow-lg border-none">
-              <CardContent className="pt-6 text-center text-red-600 font-medium flex items-center justify-center gap-2">
-                <AlertTriangle className="h-5 w-5" /> {error}
+              <CardContent className="pt-6 text-center text-red-600 font-medium flex flex-col items-center justify-center gap-3">
+                <span className="flex items-center gap-2"><AlertTriangle className="h-5 w-5" /> {error}</span>
+                {!demo && (
+                  <Button variant="outline" size="sm" onClick={() => setDemo(true)}>
+                    <FlaskConical className="h-4 w-4 mr-1" /> Ver com dados de exemplo
+                  </Button>
+                )}
               </CardContent>
             </Card>
           </motion.div>
