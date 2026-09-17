@@ -7,6 +7,7 @@ import { Component, useEffect } from "react";
 import type { ReactNode } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import { ROUTER_BASENAME } from "@/lib/config";
 
 const queryClient = new QueryClient();
 
@@ -58,7 +59,7 @@ const App = () => (
         <UnhandledRejectionHandler />
         <Toaster />
         <Sonner />
-        <BrowserRouter basename="/dashboards/dashboard-cliente">
+        <BrowserRouter basename={ROUTER_BASENAME}>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="*" element={<NotFound />} />
