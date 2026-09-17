@@ -12,15 +12,19 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShoppingCart, Store, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight, Package, BarChart3, Activity } from "lucide-react";
 import { COLORS, formatCurrency, formatCurrencyShort, formatPercent, formatNumber } from "./utils";
+import type { Produto } from "@/lib/api-types";
+
+type Tipo = "compra" | "venda";
+const productName = (p: Produto) => p.descricao || p.nome || p.produto || "Produto";
 
 interface TopProductsProps {
-  produtosEntrada: any[];
-  produtosSaida: any[];
+  produtosEntrada: Produto[];
+  produtosSaida: Produto[];
 }
 
 const TopProducts = ({ produtosEntrada, produtosSaida }: TopProductsProps) => {
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const [selectedType, setSelectedType] = useState<"compra" | "venda">("compra");
+  const [selectedProduct, setSelectedProduct] = useState<Produto | null>(null);
+  const [selectedType, setSelectedType] = useState<Tipo>("compra");
 
   if (!produtosEntrada.length && !produtosSaida.length) return null;
 
@@ -28,7 +32,7 @@ const TopProducts = ({ produtosEntrada, produtosSaida }: TopProductsProps) => {
   const topCompras = [...produtosEntrada].sort((a, b) => (b.valor_total || 0) - (a.valor_total || 0)).slice(0, 10);
   const topVendas = [...produtosSaida].sort((a, b) => (b.valor_total || 0) - (a.valor_total || 0)).slice(0, 10);
 
-  const openDetail = (produto: any, tipo: "compra" | "venda") => {
+  const openDetail = (produto: Produto, tipo: Tipo) => {
     setSelectedProduct(produto);
     setSelectedType(tipo);
   };
@@ -88,9 +92,9 @@ const TopProducts = ({ produtosEntrada, produtosSaida }: TopProductsProps) => {
   );
 };
 
-const ProductRankingChart = ({ products, tipo, onProductClick }: { products: any[]; tipo: "compra" | "venda"; onProductClick: (p: any, t: "compra" | "venda") => void }) => {
+const ProductRankingChart = ({ products, tipo, onProductClick }: { products: Produto[]; tipo: Tipo; onProductClick: (p: Produto, t: Tipo) => void }) => {
   const chartData = products.map((p) => ({
-    name: (p.descricao || p.nome || p.produto || "Produto").substring(0, 18),
+    name: productName(p).substring(0, 18),
     "Valor Atual": p.valor_total ?? 0,
     "Valor Reforma": p.total_reforma ?? 0,
     produto: p,
@@ -139,11 +143,11 @@ const ProductRankingChart = ({ products, tipo, onProductClick }: { products: any
   );
 };
 
-const ProductCard = ({ product, rank, tipo, onClick }: { product: any; rank: number; tipo: "compra" | "venda"; onClick: () => void }) => {
+const ProductCard = ({ product, rank, tipo, onClick }: { product: Produto; rank: number; tipo: Tipo; onClick: () => void }) => {
   const diff = (product.dif_total ?? 0);
   const diffPercent = product.valor_total ? ((diff / product.valor_total) * 100) : 0;
   const isIncrease = diff > 0;
-  const name = product.descricao || product.nome || product.produto || "Produto";
+  const name = productName(product);
 
   return (
     <motion.div
@@ -208,10 +212,10 @@ const ProductCard = ({ product, rank, tipo, onClick }: { product: any; rank: num
   );
 };
 
-const ProductDetailDialog = ({ product, tipo, open, onClose }: { product: any; tipo: "compra" | "venda"; open: boolean; onClose: () => void }) => {
+const ProductDetailDialog = ({ product, tipo, open, onClose }: { product: Produto | null; tipo: Tipo; open: boolean; onClose: () => void }) => {
   if (!product) return null;
 
-  const name = product.descricao || product.nome || product.produto || "Produto";
+  const name = productName(product);
   const diff = product.dif_total ?? 0;
   const isIncrease = diff > 0;
 
@@ -233,7 +237,7 @@ const ProductDetailDialog = ({ product, tipo, open, onClose }: { product: any; t
 
   // All numeric fields for detail table
   const numericFields = Object.entries(product).filter(
-    ([k, v]) => typeof v === "number" && !["id", "codigo", "ncm"].some(x => k.includes(x))
+    (entry): entry is [string, number] => typeof entry[1] === "number" && !["id", "codigo", "ncm"].some(x => entry[0].includes(x))
   );
 
   return (
@@ -332,7 +336,7 @@ const ProductDetailDialog = ({ product, tipo, open, onClose }: { product: any; t
                     {key.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
                   </p>
                   <p className="text-sm font-bold mt-0.5">
-                    {isPercentField ? formatPercent(val as number) : formatCurrency(val as number)}
+                    {isPercentField ? formatPercent(val) : formatCurrency(val)}
                   </p>
                 </div>
               );

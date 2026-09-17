@@ -6,18 +6,20 @@ import {
   PieChart, Pie, Cell, AreaChart, Area,
 } from "recharts";
 import { COLORS, PIE_COLORS, formatCurrency, formatCurrencyShort, formatPercent } from "./utils";
+import type { Entradas, Saidas } from "@/lib/api-types";
+import type { BurdenBar, ComparativoRow, PieSlice } from "@/lib/report";
 
 const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
 
 interface TaxChartsProps {
-  barDataCompras: any[];
-  barDataVendas: any[];
-  pieDataEntradas: any[];
-  pieDataSaidas: any[];
-  comparativoEntradas: any[];
-  comparativoSaidas: any[];
-  entradas: any;
-  saidas: any;
+  barDataCompras: BurdenBar[];
+  barDataVendas: BurdenBar[];
+  pieDataEntradas: PieSlice[];
+  pieDataSaidas: PieSlice[];
+  comparativoEntradas: ComparativoRow[];
+  comparativoSaidas: ComparativoRow[];
+  entradas?: Entradas;
+  saidas?: Saidas;
 }
 
 const CustomTooltipStyle = {
@@ -244,25 +246,30 @@ const ChartCard = ({ title, description, children }: { title: string; descriptio
   </Card>
 );
 
-const SummaryDetailCard = ({ title, color, data, tipo }: { title: string; color: string; data: any; tipo: "entrada" | "saida" }) => {
-  const rows = tipo === "entrada"
+type SummaryDetailCardProps =
+  | { title: string; color: string; data: Entradas; tipo: "entrada" }
+  | { title: string; color: string; data: Saidas; tipo: "saida" };
+
+const SummaryDetailCard = (props: SummaryDetailCardProps) => {
+  const { title, color } = props;
+  const rows = props.tipo === "entrada"
     ? [
-        { label: "Compra Bruta", value: formatCurrency(data.compra_bruta || 0) },
-        { label: "Créditos", value: formatCurrency(data.creditos || 0) },
-        { label: "Compra Líquida", value: formatCurrency(data.compra_liquida || 0) },
-        { label: "Carga Atual", value: formatPercent(data.carga_tributaria_atual || 0) },
-        { label: "Créditos IBS/CBS", value: formatCurrency(data.creditos_ibs_cbs || 0), highlight: true },
-        { label: "Compra Reforma", value: formatCurrency(data.compra_total_reforma || 0), highlight: true },
-        { label: "Carga Reforma", value: formatPercent(data.carga_tributaria_reforma || 0), highlight: true },
+        { label: "Compra Bruta", value: formatCurrency(props.data.compra_bruta || 0) },
+        { label: "Créditos", value: formatCurrency(props.data.creditos || 0) },
+        { label: "Compra Líquida", value: formatCurrency(props.data.compra_liquida || 0) },
+        { label: "Carga Atual", value: formatPercent(props.data.carga_tributaria_atual || 0) },
+        { label: "Créditos IBS/CBS", value: formatCurrency(props.data.creditos_ibs_cbs || 0), highlight: true },
+        { label: "Compra Reforma", value: formatCurrency(props.data.compra_total_reforma || 0), highlight: true },
+        { label: "Carga Reforma", value: formatPercent(props.data.carga_tributaria_reforma || 0), highlight: true },
       ]
     : [
-        { label: "Venda Bruta", value: formatCurrency(data.venda_bruta || 0) },
-        { label: "Débitos", value: formatCurrency(data.debitos || 0) },
-        { label: "Venda Líquida", value: formatCurrency(data.venda_liquida || 0) },
-        { label: "Carga Atual", value: formatPercent(data.carga_tributaria_atual || 0) },
-        { label: "Débitos IBS/CBS", value: formatCurrency(data.debitos_ibs_cbs || 0), highlight: true },
-        { label: "Venda Reforma", value: formatCurrency(data.venda_total_reforma || 0), highlight: true },
-        { label: "Carga Reforma", value: formatPercent(data.carga_tributaria_reforma || 0), highlight: true },
+        { label: "Venda Bruta", value: formatCurrency(props.data.venda_bruta || 0) },
+        { label: "Débitos", value: formatCurrency(props.data.debitos || 0) },
+        { label: "Venda Líquida", value: formatCurrency(props.data.venda_liquida || 0) },
+        { label: "Carga Atual", value: formatPercent(props.data.carga_tributaria_atual || 0) },
+        { label: "Débitos IBS/CBS", value: formatCurrency(props.data.debitos_ibs_cbs || 0), highlight: true },
+        { label: "Venda Reforma", value: formatCurrency(props.data.venda_total_reforma || 0), highlight: true },
+        { label: "Carga Reforma", value: formatPercent(props.data.carga_tributaria_reforma || 0), highlight: true },
       ];
 
   return (
