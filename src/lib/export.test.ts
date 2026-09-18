@@ -5,6 +5,7 @@ import {
   CSV_BOM,
   CSV_COLUMNS,
   CSV_FILENAME,
+  csvFileName,
   CSV_SEPARATOR,
   downloadCsv,
   toCsv,
@@ -14,7 +15,7 @@ const HEADER = CSV_COLUMNS.join(CSV_SEPARATOR);
 
 const linesOf = (csv: string): string[] => {
   expect(csv.startsWith(CSV_BOM)).toBe(true);
-  return csv.slice(CSV_BOM.length).replace(/\n$/, "").split("\n");
+  return csv.slice(CSV_BOM.length).replace(/\r\n$/, "").split("\r\n");
 };
 
 describe("toCsv", () => {
@@ -106,5 +107,13 @@ describe("downloadCsv", () => {
     expect(blobs[0].type).toContain("text/csv");
     expect(click).toHaveBeenCalledTimes(1);
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:mock-csv");
+  });
+});
+
+describe("csvFileName", () => {
+  it("joins the filters and skips empty ones", () => {
+    expect(csvFileName({ empresa: "42", periodoInicial: "2026-01", periodoFinal: "2026-06" })).toBe("calculadora-reforma-tributaria_42_2026-01_2026-06.csv");
+    expect(csvFileName({})).toBe("calculadora-reforma-tributaria.csv");
+    expect(csvFileName({ empresa: "Loja Centro/SP" })).toBe("calculadora-reforma-tributaria_Loja_Centro_SP.csv");
   });
 });

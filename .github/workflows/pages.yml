@@ -30,8 +30,8 @@ jobs:
       - name: Build demo
         run: npm run build
         env:
-          VITE_BASE: /dashreforma/
-          VITE_ROUTER_BASENAME: /dashreforma
+          VITE_BASE: /calculadora-reforma-tributaria/
+          VITE_ROUTER_BASENAME: /calculadora-reforma-tributaria
           VITE_DEMO: "true"
 
       - uses: actions/configure-pages@v6

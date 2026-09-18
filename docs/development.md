@@ -8,8 +8,8 @@
 ## Setup
 
 ```sh
-git clone https://github.com/grupomg-tech/dashreforma.git
-cd dashreforma
+git clone https://github.com/grupomg-tech/calculadora-reforma-tributaria.git
+cd calculadora-reforma-tributaria
 npm ci
 npm run dev
 ```

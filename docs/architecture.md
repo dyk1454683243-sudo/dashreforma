@@ -1,6 +1,6 @@
 # Architecture
 
-`dashreforma` is a single-page React application with no backend of its own. It
+`calculadora-reforma-tributaria` is a single-page React application with no backend of its own. It
 fetches one JSON report per query and renders it. All tax computation happens on
 the server that implements the [API contract](../README.md#backend-api); the demo
 mode is the only place where the front end computes taxes, and only for

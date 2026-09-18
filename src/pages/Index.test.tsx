@@ -141,7 +141,7 @@ describe("<Index />", () => {
     const links = screen.getAllByRole("link", { name: /GitHub/ });
     expect(links.length).toBeGreaterThanOrEqual(2);
     for (const link of links) {
-      expect(link).toHaveAttribute("href", "https://github.com/grupomg-tech/dashreforma");
+      expect(link).toHaveAttribute("href", "https://github.com/grupomg-tech/calculadora-reforma-tributaria");
       expect(link).toHaveAttribute("rel", expect.stringContaining("noopener"));
     }
     expect(screen.getByText(/Demo with fictional data/)).toBeInTheDocument();

@@ -11,7 +11,7 @@ import TaxCharts from "@/components/dashboard/TaxCharts";
 import type { DadosRelatorio } from "@/lib/api-types";
 import { API_URL, REPO_URL, isDemoMode } from "@/lib/config";
 import { buildDemoReport } from "@/lib/demo";
-import { downloadCsv, toCsv } from "@/lib/export";
+import { csvFileName, downloadCsv, toCsv } from "@/lib/export";
 import {
   computeImpactDelta, deriveBurdenBar, deriveComparativo, derivePieData, parseApiResponse,
 } from "@/lib/report";
@@ -104,7 +104,7 @@ const Index = () => {
         <div className="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#4e6ae9] to-[#764ba2] bg-clip-text text-transparent">
-              Dashboard Reforma Tributária
+              Calculadora Reforma Tributária
             </h1>
             <p className="text-sm text-muted-foreground">Análise comparativa de impacto fiscal • Interativo</p>
           </div>
@@ -120,7 +120,7 @@ const Index = () => {
               variant="outline"
               size="sm"
               disabled={!data}
-              onClick={() => { if (data) downloadCsv(toCsv(data)); }}
+              onClick={() => { if (data) downloadCsv(toCsv(data), csvFileName({ empresa, periodoInicial, periodoFinal })); }}
               className="bg-white/80"
             >
               <Download className="h-4 w-4" /> Exportar CSV

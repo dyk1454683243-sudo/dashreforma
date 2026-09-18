@@ -7,7 +7,7 @@ Only the latest commit on `main` is supported.
 ## Reporting a vulnerability
 
 Please do not open a public issue for security problems. Use GitHub's private
-reporting at <https://github.com/grupomg-tech/dashreforma/security/advisories/new>.
+reporting at <https://github.com/grupomg-tech/calculadora-reforma-tributaria/security/advisories/new>.
 
 You should get an acknowledgement within 7 days. Once the issue is confirmed, a
 fix will be published on `main` and the advisory will credit you, unless you

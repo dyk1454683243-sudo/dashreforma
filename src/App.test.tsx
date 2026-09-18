@@ -18,7 +18,7 @@ describe("<AppRoutes />", () => {
 
     render(<MemoryRouter initialEntries={["/"]}><AppRoutes /></MemoryRouter>);
 
-    expect(screen.getByText("Dashboard Reforma Tributária")).toBeInTheDocument();
+    expect(screen.getByText("Calculadora Reforma Tributária")).toBeInTheDocument();
   });
 
   it("renders the 404 page for unknown routes, with a link back", () => {

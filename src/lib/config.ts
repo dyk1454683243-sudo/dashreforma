@@ -7,7 +7,7 @@
 const env = import.meta.env;
 
 /** Public repository, linked from the UI. */
-export const REPO_URL = "https://github.com/grupomg-tech/dashreforma";
+export const REPO_URL = "https://github.com/grupomg-tech/calculadora-reforma-tributaria";
 
 /** Endpoint that returns the report. */
 export const API_URL: string = env.VITE_API_URL || "/dashboards/api/graficos/dados-relatorio/";
