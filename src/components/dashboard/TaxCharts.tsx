@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  PieChart, Pie, Cell, AreaChart, Area,
+  PieChart, Pie, Cell,
 } from "recharts";
 import { COLORS, PIE_COLORS, formatCurrency, formatCurrencyShort, formatPercent } from "./utils";
 import type { Entradas, Saidas } from "@/lib/api-types";

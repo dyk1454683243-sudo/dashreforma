@@ -1,0 +1,210 @@
+{
+  "resumo": {
+    "apuracao_atual": {
+      "debitos": 158861.01,
+      "creditos": 120349.26,
+      "resultado": 38511.75,
+      "carga_tributaria_efetiva": 4.39
+    },
+    "apuracao_reforma": {
+      "debitos": 80165.82,
+      "creditos": 60731.68,
+      "resultado": 19434.14,
+      "carga_tributaria_efetiva": 2.43
+    }
+  },
+  "entradas": {
+    "produtos": [
+      {
+        "descricao": "Arroz branco tipo 1 5kg",
+        "ncm": "1006.30.21",
+        "quantidade": 4200,
+        "valor_total": 96600,
+        "total_reforma": 89838,
+        "dif_total": -6762,
+        "icms": 6762,
+        "pis": 0,
+        "cofins": 0,
+        "ibs": 0,
+        "cbs": 0,
+        "ibs_cbs": 0,
+        "is": 0,
+        "creditos": 6762,
+        "creditos_reforma": 0
+      },
+      {
+        "descricao": "Feijão carioca 1kg",
+        "ncm": "0713.33.19",
+        "quantidade": 6100,
+        "valor_total": 45750,
+        "total_reforma": 42547.5,
+        "dif_total": -3202.5,
+        "icms": 3202.5,
+        "pis": 0,
+        "cofins": 0,
+        "ibs": 0,
+        "cbs": 0,
+        "ibs_cbs": 0,
+        "is": 0,
+        "creditos": 3202.5,
+        "creditos_reforma": 0
+      },
+      {
+        "descricao": "Óleo de soja 900ml",
+        "ncm": "1507.90.11",
+        "quantidade": 7400,
+        "valor_total": 51800,
+        "total_reforma": 45198.1,
+        "dif_total": -6601.9,
+        "icms": 6216,
+        "pis": 854.7,
+        "cofins": 3936.8,
+        "ibs": 3018.65,
+        "cbs": 1386.95,
+        "ibs_cbs": 4405.6,
+        "is": 0,
+        "creditos": 11007.5,
+        "creditos_reforma": 4405.6
+      }
+    ],
+    "compra_bruta": 664610,
+    "creditos": 120349.26,
+    "compra_liquida": 544260.74,
+    "carga_tributaria_atual": 18.11,
+    "creditos_ibs_cbs": 60731.68,
+    "compra_total_reforma": 604992.42,
+    "carga_tributaria_reforma": 10.04
+  },
+  "saidas": {
+    "produtos": [
+      {
+        "descricao": "Arroz branco tipo 1 5kg",
+        "ncm": "1006.30.21",
+        "quantidade": 4200,
+        "valor_total": 127512,
+        "total_reforma": 118586.16,
+        "dif_total": -8925.84,
+        "icms": 8925.84,
+        "pis": 0,
+        "cofins": 0,
+        "ibs": 0,
+        "cbs": 0,
+        "ibs_cbs": 0,
+        "is": 0,
+        "debitos": 8925.84,
+        "debitos_reforma": 0
+      },
+      {
+        "descricao": "Feijão carioca 1kg",
+        "ncm": "0713.33.19",
+        "quantidade": 6100,
+        "valor_total": 60390,
+        "total_reforma": 56162.7,
+        "dif_total": -4227.3,
+        "icms": 4227.3,
+        "pis": 0,
+        "cofins": 0,
+        "ibs": 0,
+        "cbs": 0,
+        "ibs_cbs": 0,
+        "is": 0,
+        "debitos": 4227.3,
+        "debitos_reforma": 0
+      },
+      {
+        "descricao": "Óleo de soja 900ml",
+        "ncm": "1507.90.11",
+        "quantidade": 7400,
+        "valor_total": 68376,
+        "total_reforma": 59661.48,
+        "dif_total": -8714.52,
+        "icms": 8205.12,
+        "pis": 1128.2,
+        "cofins": 5196.58,
+        "ibs": 3984.61,
+        "cbs": 1830.77,
+        "ibs_cbs": 5815.38,
+        "is": 0,
+        "debitos": 14529.9,
+        "debitos_reforma": 5815.38
+      }
+    ],
+    "venda_bruta": 877285.2,
+    "debitos": 158861.01,
+    "venda_liquida": 718424.19,
+    "carga_tributaria_atual": 18.11,
+    "debitos_ibs_cbs": 80165.82,
+    "venda_total_reforma": 798590.01,
+    "carga_tributaria_reforma": 10.04
+  },
+  "graficos": {
+    "comparativo_entradas": {
+      "labels": [
+        "ICMS",
+        "PIS",
+        "COFINS",
+        "IBS",
+        "CBS",
+        "IS"
+      ],
+      "datasets": [
+        {
+          "label": "Atual",
+          "data": [
+            84361.2,
+            6419.5,
+            29568.56,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "label": "Reforma",
+          "data": [
+            0,
+            0,
+            0,
+            41612.44,
+            19119.24,
+            0
+          ]
+        }
+      ]
+    },
+    "comparativo_saidas": {
+      "labels": [
+        "ICMS",
+        "PIS",
+        "COFINS",
+        "IBS",
+        "CBS",
+        "IS"
+      ],
+      "datasets": [
+        {
+          "label": "Atual",
+          "data": [
+            111356.78,
+            8473.73,
+            39030.5,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "label": "Reforma",
+          "data": [
+            0,
+            0,
+            0,
+            54928.43,
+            25237.39,
+            0
+          ]
+        }
+      ]
+    }
+  }
+}

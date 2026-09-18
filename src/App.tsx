@@ -1,7 +1,3 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Component, useEffect } from "react";
 import type { ReactNode } from "react";
@@ -9,9 +5,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { ROUTER_BASENAME } from "@/lib/config";
 
-const queryClient = new QueryClient();
-
-class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: string }> {
+export class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: string }> {
   constructor(props: { children: ReactNode }) {
     super(props);
     this.state = { hasError: false, error: "" };
@@ -52,22 +46,19 @@ const UnhandledRejectionHandler = () => {
   return null;
 };
 
+export const AppRoutes = () => (
+  <Routes>
+    <Route path="/" element={<Index />} />
+    <Route path="*" element={<NotFound />} />
+  </Routes>
+);
+
 const App = () => (
   <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <UnhandledRejectionHandler />
-        <Toaster />
-        <Sonner />
-        <BrowserRouter basename={ROUTER_BASENAME}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-
-      </TooltipProvider>
-    </QueryClientProvider>
+    <UnhandledRejectionHandler />
+    <BrowserRouter basename={ROUTER_BASENAME}>
+      <AppRoutes />
+    </BrowserRouter>
   </ErrorBoundary>
 );
 
