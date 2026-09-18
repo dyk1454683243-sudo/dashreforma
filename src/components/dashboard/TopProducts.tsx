@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 } from "recharts";
 import {
@@ -63,7 +63,7 @@ const TopProducts = ({ produtosEntrada, produtosSaida }: TopProductsProps) => {
           <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mt-4">
             <AnimatePresence>
               {topVendas.map((p, i) => (
-                <ProductCard key={i} product={p} rank={i + 1} tipo="venda" onClick={() => openDetail(p, "venda")} />
+                <ProductCard key={i} product={p} rank={i + 1} onClick={() => openDetail(p, "venda")} />
               ))}
             </AnimatePresence>
           </motion.div>
@@ -74,7 +74,7 @@ const TopProducts = ({ produtosEntrada, produtosSaida }: TopProductsProps) => {
           <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mt-4">
             <AnimatePresence>
               {topCompras.map((p, i) => (
-                <ProductCard key={i} product={p} rank={i + 1} tipo="compra" onClick={() => openDetail(p, "compra")} />
+                <ProductCard key={i} product={p} rank={i + 1} onClick={() => openDetail(p, "compra")} />
               ))}
             </AnimatePresence>
           </motion.div>
@@ -143,7 +143,7 @@ const ProductRankingChart = ({ products, tipo, onProductClick }: { products: Pro
   );
 };
 
-const ProductCard = ({ product, rank, tipo, onClick }: { product: Produto; rank: number; tipo: Tipo; onClick: () => void }) => {
+const ProductCard = ({ product, rank, onClick }: { product: Produto; rank: number; onClick: () => void }) => {
   const diff = (product.dif_total ?? 0);
   const diffPercent = product.valor_total ? ((diff / product.valor_total) * 100) : 0;
   const isIncrease = diff > 0;
