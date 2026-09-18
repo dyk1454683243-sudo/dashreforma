@@ -16,9 +16,15 @@ Dashboard that simulates the impact of Brazil's consumption tax reform (**IBS / 
 
 ## Why
 
-Constitutional Amendment 132/2023 replaces PIS, COFINS, ICMS, ISS and part of IPI with a dual VAT (IBS + CBS) plus a selective tax (IS), phased in from 2026 to 2033. Every Brazilian company and accounting firm needs to answer the same question: *"what happens to my tax burden?"* — and there is very little open tooling to help.
+Constitutional Amendment 132/2023 replaces PIS, COFINS, ICMS, ISS and part of IPI with a dual VAT (IBS + CBS) plus a selective tax (IS), phased in from 2026 to 2033. Companies outside the Simples Nacional regime, and the accounting firms that serve them, need to answer the same question during the transition: *"what happens to my tax burden?"*
 
-`dashreforma` is the front end for that answer: it takes a company's purchases and sales for a period, applies the reform rates you choose, and shows where the burden goes up or down.
+`dashreforma` is a front end for that answer: it takes a company's purchases and sales for a period, as computed by a backend that implements the [API contract](#backend-api), and shows where the burden goes up or down, product by product. Several open-source engines and simulators for the reform exist (see [Alternatives](#alternatives)); this project focuses on the presentation layer and on a contract that any of them could feed.
+
+## Who is it for
+
+- **Accountants and finance teams** of companies in the *lucro real* or *lucro presumido* regimes who need to see the reform's effect on their own purchases and sales, not on a generic example.
+- **Developers of tax-calculation backends** who want a tested, documented front end instead of building one: implement the JSON contract and point the app at it with `VITE_API_URL`.
+- **Anyone exploring the reform** — the [live demo](https://grupomg-tech.github.io/dashreforma/) runs on fictional data and needs no setup.
 
 ## Features
 
@@ -30,6 +36,14 @@ Constitutional Amendment 132/2023 replaces PIS, COFINS, ICMS, ISS and part of IP
 - **Filters** — company, start and end period; filters can be preset through the URL query string.
 - **Demo mode** — a fictional catalogue of 12 products (basic-basket items at zero rate, reduced-rate goods, products subject to IS) lets you explore the dashboard without a backend.
 - **Auto refresh** — optional 30-second polling.
+
+## What it does not do
+
+- **It does not compute taxes.** The backend does; the dashboard renders what the backend returns. The demo mode uses a deliberately simplified model (see [docs/architecture.md](docs/architecture.md#demo-tax-model-illustrative-only)) that exists only so the UI can be explored.
+- **It is not legal or tax advice** and has not been validated against the official Receita Federal calculator.
+- **It does not cover the Simples Nacional** regime, whose transition rules differ.
+- **It does not import NF-e, SPED or spreadsheets** — that is the backend's job.
+- **It does not store anything.** No accounts, no persistence, no analytics.
 
 ## Status
 
@@ -168,6 +182,23 @@ src/
 | [docs/release-process.md](docs/release-process.md) | Versioning and release checklist |
 | [docs/maintenance.md](docs/maintenance.md) | Dependabot, audits, CodeQL, triage |
 | [AGENTS.md](AGENTS.md) | Instructions for coding agents |
+
+## Alternatives
+
+The ecosystem around the reform is young and growing fast. Projects found in September 2026 that overlap with `dashreforma` (listed for orientation, not as a comparison of quality):
+
+| Project | What it is |
+| --- | --- |
+| [Calculadora da Reforma Tributária (Receita Federal / Serpro)](https://www.gov.br/receitafederal/) | Official calculator, released as open source with a REST component; the reference for rates, classification and calculation memory. |
+| [andre-djsystem/CalculadoraRTC](https://github.com/andre-djsystem/CalculadoraRTC) | Pascal library wrapping the official calculator's endpoints. |
+| [fraurino/ReformaTributaria2025](https://github.com/fraurino/ReformaTributaria2025) | Tax classification and CBS/IBS rates through the official API. |
+| [vilsonneto/tributos-br](https://github.com/vilsonneto/tributos-br) | TypeScript tax-calculation engine (ICMS, IPI, IBS, CBS…). |
+| [micdepieri/simulador-reforma-tributaria](https://github.com/micdepieri/simulador-reforma-tributaria) | Python simulator of the 2026–2033 transition across regimes. |
+| [locksarnon/simulador-reforma](https://github.com/locksarnon/simulador-reforma) | Full-stack simulator (React + NestJS) with NF-e import and scenarios. |
+| [mickbap/tribultz](https://github.com/mickbap/tribultz) | Compliance and simulation platform with an executive dashboard. |
+| Free web simulators (Portal Contábeis, Conta Azul, BuscadorNCM, Tributos.io) | Closed-source calculators, some per NCM. |
+
+`dashreforma` differs in scope rather than in ambition: it is only the presentation layer, MIT-licensed, with a public demo, a documented JSON contract, tests and CI. A calculation engine from the list above could feed it by implementing the contract. If you maintain one of these projects and something here is inaccurate, open an issue.
 
 ## Contributing
 

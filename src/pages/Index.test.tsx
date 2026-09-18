@@ -102,6 +102,22 @@ describe("<Index />", () => {
     });
   });
 
+  it("links to the repository from the header and from the demo banner", async () => {
+    vi.stubGlobal("fetch", vi.fn());
+    setSearch("?demo=1");
+
+    render(<Index />);
+
+    await waitFor(() => expect(screen.getByText(/Modo demonstração/)).toBeInTheDocument());
+    const links = screen.getAllByRole("link", { name: /GitHub/ });
+    expect(links.length).toBeGreaterThanOrEqual(2);
+    for (const link of links) {
+      expect(link).toHaveAttribute("href", "https://github.com/grupomg-tech/dashreforma");
+      expect(link).toHaveAttribute("rel", expect.stringContaining("noopener"));
+    }
+    expect(screen.getByText(/Demo with fictional data/)).toBeInTheDocument();
+  });
+
   it("reads filters from the query string", async () => {
     const fetchMock = vi.fn().mockResolvedValue(jsonResponse(relatorio));
     vi.stubGlobal("fetch", fetchMock);

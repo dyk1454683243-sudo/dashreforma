@@ -5,6 +5,18 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Link to the repository in the dashboard header and an English line in the
+  demo banner pointing to the source and the API contract.
+- README sections "Who is it for", "What it does not do" and "Alternatives"
+  (survey of related open-source and free tools, September 2026).
+
+### Changed
+
+- README "Why" no longer claims that open tooling is scarce; the project is
+  positioned as a presentation layer over a documented contract.
+
 ## [0.1.1] - 2026-09-17
 
 Maintenance release: security, tests, documentation and dependency currency.
