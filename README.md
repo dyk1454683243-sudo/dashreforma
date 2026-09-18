@@ -5,6 +5,7 @@ Dashboard that simulates the impact of Brazil's consumption tax reform (**IBS / 
 > 🇧🇷 Painel que simula o impacto da Reforma Tributária (IBS, CBS e Imposto Seletivo) na apuração de uma empresa, comparando com o sistema atual. [Resumo em português](#resumo-em-português) no fim deste arquivo.
 
 [![CI](https://github.com/grupomg-tech/dashreforma/actions/workflows/ci.yml/badge.svg)](https://github.com/grupomg-tech/dashreforma/actions/workflows/ci.yml)
+[![Security](https://github.com/grupomg-tech/dashreforma/actions/workflows/security.yml/badge.svg)](https://github.com/grupomg-tech/dashreforma/actions/workflows/security.yml)
 [![Live demo](https://img.shields.io/badge/demo-GitHub%20Pages-4e6ae9.svg)](https://grupomg-tech.github.io/dashreforma/)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Status: early stage](https://img.shields.io/badge/status-early%20stage-orange.svg)
@@ -32,20 +33,20 @@ Constitutional Amendment 132/2023 replaces PIS, COFINS, ICMS, ISS and part of IP
 
 ## Status
 
-Early stage. The dashboard is functional and the data mapping is covered by unit tests, but the project is young and the UI is Portuguese-only. See the [roadmap](#roadmap). Issues and pull requests are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md).
+Early stage, actively maintained by a single developer. The dashboard is functional; the data mapping, the demo model, the page and the main components are covered by 43 tests (about 90% statement coverage over `src/`, with an 80% threshold enforced in CI). Dependencies are kept current by Dependabot and audited weekly. The UI is Portuguese-only for now. See the [roadmap](#roadmap) and the [open issues](https://github.com/grupomg-tech/dashreforma/issues); contributions are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Tech stack
 
-React 18 · TypeScript · Vite · Tailwind CSS · shadcn/ui (Radix) · Recharts · Framer Motion · TanStack Query · Vitest
+React 18 · TypeScript (strict) · Vite 8 · Tailwind CSS · shadcn/ui (Radix) · Recharts · Framer Motion · Vitest + Testing Library
 
 ## Getting started
 
-Requires Node.js 18+ and npm.
+Requires Node.js 20.19+ (CI uses 22) and npm.
 
 ```sh
 git clone https://github.com/grupomg-tech/dashreforma.git
 cd dashreforma
-npm install
+npm ci
 npm run dev      # dev server on http://localhost:8080
 ```
 
@@ -57,7 +58,8 @@ Other scripts:
 npm run build    # production build
 npm run preview  # preview the production build
 npm run lint     # ESLint
-npm test         # Vitest
+npm run typecheck
+npm test         # Vitest (npm run test:coverage for the coverage report)
 ```
 
 ## Configuration
@@ -119,6 +121,15 @@ Expected response (JSON, optionally wrapped in a `dados` key). The full contract
 
 `buildDemoReport()` in [`src/lib/demo.ts`](src/lib/demo.ts) produces a complete example of this payload.
 
+## Architecture
+
+```
+FilterPanel ──▶ Index.fetchData ──▶ fetch(API) ──▶ parseApiResponse ──▶ lib/report.* ──▶ cards & charts
+                      └── demo mode ──▶ lib/demo.buildDemoReport ─────────┘
+```
+
+All computation lives in `src/lib` as pure, unit-tested functions; components only render. The contract is permissive: any missing block hides its section instead of failing. Full description in [docs/architecture.md](docs/architecture.md).
+
 ## Project structure
 
 ```
@@ -130,7 +141,7 @@ src/
 │   └── config.ts                    # env-based configuration
 ├── pages/Index.tsx                  # data fetching and page layout
 └── components/dashboard/
-    ├── FilterPanel.tsx              # company, period and rate filters
+    ├── FilterPanel.tsx              # company, period and rate filters (+ tests)
     ├── ImpactOverview.tsx           # impact and summary cards
     ├── TaxCharts.tsx                # burden, comparison and composition charts
     ├── TopProducts.tsx              # top purchased / sold products
@@ -142,13 +153,29 @@ src/
 - [x] Configurable API URL and base path through environment variables
 - [x] Demo mode so the dashboard runs without a backend
 - [x] Typed API contract and unit tests for the data mapping
+- [x] Component tests, coverage thresholds, Dependabot, CodeQL and audit workflow
 - [ ] Classification of products (NCM) into the reform's differentiated regimes, with legal references
 - [ ] Export the simulation (CSV / PDF)
 - [ ] English UI (i18n)
 
+## Documentation
+
+| Guide | Content |
+| --- | --- |
+| [docs/architecture.md](docs/architecture.md) | Data flow, modules, design rules, demo model |
+| [docs/development.md](docs/development.md) | Setup, scripts, conventions, branches |
+| [docs/testing.md](docs/testing.md) | Test suites, fixture, coverage |
+| [docs/release-process.md](docs/release-process.md) | Versioning and release checklist |
+| [docs/maintenance.md](docs/maintenance.md) | Dependabot, audits, CodeQL, triage |
+| [AGENTS.md](AGENTS.md) | Instructions for coding agents |
+
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Security issues: [SECURITY.md](SECURITY.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). Security issues: [SECURITY.md](SECURITY.md).
+
+## Security
+
+No secrets, no persistence, no authentication of its own: the app renders what the configured backend returns. Dependabot (weekly), a weekly `npm audit` workflow, CodeQL and secret scanning with push protection are enabled. Vulnerabilities: see [SECURITY.md](SECURITY.md).
 
 ## Disclaimer
 
