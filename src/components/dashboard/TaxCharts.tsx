@@ -5,7 +5,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell,
 } from "recharts";
-import { COLORS, PIE_COLORS, formatCurrency, formatCurrencyShort, formatPercent } from "./utils";
+import { COLORS, PIE_COLORS, formatCurrency, formatCurrencyShort, formatPercent, tooltipCurrency } from "./utils";
 import type { Entradas, Saidas } from "@/lib/api-types";
 import type { BurdenBar, ComparativoRow, PieSlice } from "@/lib/report";
 
@@ -73,7 +73,7 @@ const TaxCharts = ({
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                   <XAxis type="number" tickFormatter={formatCurrencyShort} tick={{ fontSize: 11 }} />
                   <YAxis dataKey="tributo" type="category" width={70} tick={{ fontSize: 11, fontWeight: 600 }} />
-                  <Tooltip formatter={(v: number) => formatCurrency(v)} contentStyle={CustomTooltipStyle} />
+                  <Tooltip formatter={tooltipCurrency} contentStyle={CustomTooltipStyle} />
                   <Legend />
                   <Bar dataKey="Atual" fill="url(#gradAtualEnt)" radius={[0, 6, 6, 0]} barSize={18} />
                   <Bar dataKey="Reforma" fill="url(#gradReformaEnt)" radius={[0, 6, 6, 0]} barSize={18} />
@@ -98,7 +98,7 @@ const TaxCharts = ({
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                   <XAxis type="number" tickFormatter={formatCurrencyShort} tick={{ fontSize: 11 }} />
                   <YAxis dataKey="tributo" type="category" width={70} tick={{ fontSize: 11, fontWeight: 600 }} />
-                  <Tooltip formatter={(v: number) => formatCurrency(v)} contentStyle={CustomTooltipStyle} />
+                  <Tooltip formatter={tooltipCurrency} contentStyle={CustomTooltipStyle} />
                   <Legend />
                   <Bar dataKey="Atual" fill="url(#gradAtualSai)" radius={[0, 6, 6, 0]} barSize={18} />
                   <Bar dataKey="Reforma" fill="url(#gradReformaSai)" radius={[0, 6, 6, 0]} barSize={18} />
@@ -208,7 +208,7 @@ const DonutCard = ({ title, data }: { title: string; data: { name: string; value
             </defs>
             <Pie data={data} cx="50%" cy="50%" outerRadius={100} innerRadius={55} dataKey="value"
               paddingAngle={3} cornerRadius={6}
-              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`}
+              label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(1)}%`}
               labelLine={{ strokeWidth: 2 }}
             >
               {data.map((_, i) => (
@@ -216,7 +216,7 @@ const DonutCard = ({ title, data }: { title: string; data: { name: string; value
               ))}
             </Pie>
             <Tooltip
-              formatter={(v: number) => [formatCurrency(v), ""]}
+              formatter={(v) => [tooltipCurrency(v), ""]}
               contentStyle={CustomTooltipStyle}
             />
           </PieChart>

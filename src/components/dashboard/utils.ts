@@ -24,3 +24,6 @@ export const formatPercent = (value: number) => `${value.toFixed(2)}%`;
 
 export const formatNumber = (value: number) =>
   new Intl.NumberFormat("pt-BR").format(value);
+
+/** Tooltip formatter for Recharts: values may arrive as strings, arrays or undefined. */
+export const tooltipCurrency = (value: unknown) => formatCurrency(Number(value) || 0);

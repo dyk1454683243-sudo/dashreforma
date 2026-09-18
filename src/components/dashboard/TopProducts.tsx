@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShoppingCart, Store, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight, Package, BarChart3, Activity } from "lucide-react";
-import { COLORS, formatCurrency, formatCurrencyShort, formatPercent, formatNumber } from "./utils";
+import { COLORS, formatCurrency, formatCurrencyShort, formatPercent, formatNumber, tooltipCurrency } from "./utils";
 import type { Produto } from "@/lib/api-types";
 
 type Tipo = "compra" | "venda";
@@ -129,13 +129,13 @@ const ProductRankingChart = ({ products, tipo, onProductClick }: { products: Pro
             <XAxis type="number" tickFormatter={formatCurrencyShort} tick={{ fontSize: 11 }} />
             <YAxis dataKey="name" type="category" width={140} tick={{ fontSize: 11, fontWeight: 500 }} />
             <Tooltip
-              formatter={(v: number) => formatCurrency(v)}
+              formatter={tooltipCurrency}
               contentStyle={{ borderRadius: 12, border: "none", boxShadow: "0 10px 40px rgba(0,0,0,0.12)" }}
             />
             <Bar dataKey="Valor Atual" fill={`url(#${gradientId}Atual)`} radius={[0, 6, 6, 0]} barSize={16}
-              cursor="pointer" onClick={(data) => onProductClick(data.produto, tipo)} />
+              cursor="pointer" onClick={(_, index) => onProductClick(products[index], tipo)} />
             <Bar dataKey="Valor Reforma" fill={`url(#${gradientId}Reforma)`} radius={[0, 6, 6, 0]} barSize={16}
-              cursor="pointer" onClick={(data) => onProductClick(data.produto, tipo)} />
+              cursor="pointer" onClick={(_, index) => onProductClick(products[index], tipo)} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
@@ -299,7 +299,7 @@ const ProductDetailDialog = ({ product, tipo, open, onClose }: { product: Produt
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis dataKey="name" tick={{ fontSize: 10 }} />
                 <YAxis tickFormatter={formatCurrencyShort} tick={{ fontSize: 10 }} />
-                <Tooltip formatter={(v: number) => formatCurrency(v)} contentStyle={{ borderRadius: 12, border: "none", boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }} />
+                <Tooltip formatter={tooltipCurrency} contentStyle={{ borderRadius: 12, border: "none", boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }} />
                 <Bar dataKey="Atual" fill="url(#gradAtualDialog)" radius={[6, 6, 0, 0]} />
                 <Bar dataKey="Reforma" fill="url(#gradReformaDialog)" radius={[6, 6, 0, 0]} />
               </BarChart>
@@ -317,7 +317,7 @@ const ProductDetailDialog = ({ product, tipo, open, onClose }: { product: Produt
                   <PolarRadiusAxis tick={{ fontSize: 8 }} />
                   <Radar name="Atual" dataKey="Atual" stroke={COLORS.blue} fill={COLORS.blue} fillOpacity={0.2} strokeWidth={2} />
                   <Radar name="Reforma" dataKey="Reforma" stroke={COLORS.purple} fill={COLORS.purple} fillOpacity={0.2} strokeWidth={2} />
-                  <Tooltip formatter={(v: number) => formatCurrency(v)} />
+                  <Tooltip formatter={tooltipCurrency} />
                 </RadarChart>
               </ResponsiveContainer>
             </div>
