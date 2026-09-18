@@ -5,6 +5,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-09-17
+
+Maintenance release: security, tests, documentation and dependency currency.
+No changes to the API contract or to the deployment defaults.
+
 ### Added
 
 - Component and routing tests (`Index`, `FilterPanel`, `TopProducts`, `AppRoutes`,
@@ -63,5 +68,6 @@ First tagged release.
 - Page title and metadata now describe the project instead of the template.
 - Dashboard components are fully typed (no `any`).
 
-[Unreleased]: https://github.com/grupomg-tech/dashreforma/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/grupomg-tech/dashreforma/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/grupomg-tech/dashreforma/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/grupomg-tech/dashreforma/releases/tag/v0.1.0
