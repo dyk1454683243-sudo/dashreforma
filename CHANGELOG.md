@@ -23,6 +23,9 @@ All notable changes to this project are documented here. The format follows
   the application chunk went from 919 kB to 46 kB (#1).
 - Toolchain upgraded: Vite 8, Vitest 5, react-router-dom 7,
   `@vitejs/plugin-react` (#1).
+- React 19, Recharts 3, Framer Motion 13, lucide-react 1.x, tailwind-merge 3
+  and the Radix primitives updated; tooltip formatters adapted to Recharts 3
+  types (#7, #10, #11, #12, #15).
 - `NotFound` uses the router link and no longer logs to the console.
 - CONTRIBUTING rewritten with branch, commit and review rules.
 

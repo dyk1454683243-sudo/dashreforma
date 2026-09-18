@@ -6,7 +6,9 @@ Routine that keeps the project healthy between feature work.
 
 - **Dependabot PRs** (Mondays, `dependencies` label): read the grouped
   changelogs, let CI run, merge when green. For major bumps of Vite, Vitest,
-  React or react-router-dom, run the demo locally before merging.
+  React or react-router-dom, run the demo locally before merging. `react`,
+  `react-dom`, `@types/react` and `@types/react-dom` must move together:
+  Dependabot may bump only one of them, which breaks `npm ci` (see #15).
 - **Security workflow**: `npm audit --audit-level=high` runs every Monday and on
   every PR. A failure blocks merging until the dependency is updated or the
   advisory is assessed and documented in the PR.
