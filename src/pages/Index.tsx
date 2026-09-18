@@ -3,13 +3,13 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, FlaskConical } from "lucide-react";
+import { AlertTriangle, ExternalLink, FlaskConical } from "lucide-react";
 import FilterPanel from "@/components/dashboard/FilterPanel";
 import { ImpactCards, SummaryCards, ImpactBadge } from "@/components/dashboard/ImpactOverview";
 import TopProducts from "@/components/dashboard/TopProducts";
 import TaxCharts from "@/components/dashboard/TaxCharts";
 import type { DadosRelatorio } from "@/lib/api-types";
-import { API_URL, isDemoMode } from "@/lib/config";
+import { API_URL, REPO_URL, isDemoMode } from "@/lib/config";
 import { buildDemoReport } from "@/lib/demo";
 import {
   computeImpactDelta, deriveBurdenBar, deriveComparativo, derivePieData, parseApiResponse,
@@ -107,12 +107,23 @@ const Index = () => {
             </h1>
             <p className="text-sm text-muted-foreground">Análise comparativa de impacto fiscal • Interativo</p>
           </div>
-          {data && impactoDelta && (
-            <div className="hidden md:flex items-center gap-3">
-              <ImpactBadge label="Impacto Carga" value={impactoDelta.carga} suffix="pp" />
-              <ImpactBadge label="Impacto Resultado" value={impactoDelta.resultado} prefix="R$" />
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            {data && impactoDelta && (
+              <div className="hidden md:flex items-center gap-3">
+                <ImpactBadge label="Impacto Carga" value={impactoDelta.carga} suffix="pp" />
+                <ImpactBadge label="Impacto Resultado" value={impactoDelta.resultado} prefix="R$" />
+              </div>
+            )}
+            <a
+              href={REPO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 rounded-md border bg-white/80 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-white"
+              title="Código-fonte, documentação e contrato da API no GitHub"
+            >
+              <ExternalLink className="h-4 w-4" /> GitHub · README
+            </a>
+          </div>
         </div>
       </header>
 
@@ -123,7 +134,11 @@ const Index = () => {
             <FlaskConical className="h-4 w-4 shrink-0" />
             <span>
               <strong>Modo demonstração:</strong> dados fictícios gerados localmente. Altere as alíquotas e clique em
-              consultar para recalcular a simulação.
+              Simular para recalcular a simulação.
+              <span className="block text-xs text-amber-700">
+                Demo with fictional data — source code and API contract on{" "}
+                <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="underline">GitHub</a>.
+              </span>
             </span>
           </div>
         )}
