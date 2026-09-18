@@ -1,30 +1,30 @@
-# dashreforma
+# Calculadora Reforma Tributária
 
-Dashboard that simulates the impact of Brazil's consumption tax reform (**IBS / CBS / IS**) on a company's tax assessment, side by side with the current system.
+Open-source dashboard that simulates the impact of Brazil's consumption tax reform (**IBS / CBS / IS**) on a company's tax assessment, side by side with the current system. Community project, MIT-licensed; **not affiliated with the Receita Federal's official "Calculadora da Reforma Tributária"** (see [Alternatives](#alternatives)).
 
 > 🇧🇷 Painel que simula o impacto da Reforma Tributária (IBS, CBS e Imposto Seletivo) na apuração de uma empresa, comparando com o sistema atual. [Resumo em português](#resumo-em-português) no fim deste arquivo.
 
-[![CI](https://github.com/grupomg-tech/dashreforma/actions/workflows/ci.yml/badge.svg)](https://github.com/grupomg-tech/dashreforma/actions/workflows/ci.yml)
-[![Security](https://github.com/grupomg-tech/dashreforma/actions/workflows/security.yml/badge.svg)](https://github.com/grupomg-tech/dashreforma/actions/workflows/security.yml)
-[![Live demo](https://img.shields.io/badge/demo-GitHub%20Pages-4e6ae9.svg)](https://grupomg-tech.github.io/dashreforma/)
+[![CI](https://github.com/grupomg-tech/calculadora-reforma-tributaria/actions/workflows/ci.yml/badge.svg)](https://github.com/grupomg-tech/calculadora-reforma-tributaria/actions/workflows/ci.yml)
+[![Security](https://github.com/grupomg-tech/calculadora-reforma-tributaria/actions/workflows/security.yml/badge.svg)](https://github.com/grupomg-tech/calculadora-reforma-tributaria/actions/workflows/security.yml)
+[![Live demo](https://img.shields.io/badge/demo-GitHub%20Pages-4e6ae9.svg)](https://grupomg-tech.github.io/calculadora-reforma-tributaria/)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Status: early stage](https://img.shields.io/badge/status-early%20stage-orange.svg)
 
-**Live demo:** <https://grupomg-tech.github.io/dashreforma/> — runs on a built-in fictional dataset; change the IBS, CBS and IS rates and click *Simular* to recalculate.
+**Live demo:** <https://grupomg-tech.github.io/calculadora-reforma-tributaria/> — runs on a built-in fictional dataset; change the IBS, CBS and IS rates and click *Simular* to recalculate.
 
-![dashreforma screenshot](docs/screenshot.png)
+![Calculadora Reforma Tributária screenshot](docs/screenshot.png)
 
 ## Why
 
 Constitutional Amendment 132/2023 replaces PIS, COFINS, ICMS, ISS and part of IPI with a dual VAT (IBS + CBS) plus a selective tax (IS), phased in from 2026 to 2033. Companies outside the Simples Nacional regime, and the accounting firms that serve them, need to answer the same question during the transition: *"what happens to my tax burden?"*
 
-`dashreforma` is a front end for that answer: it takes a company's purchases and sales for a period, as computed by a backend that implements the [API contract](#backend-api), and shows where the burden goes up or down, product by product. Several open-source engines and simulators for the reform exist (see [Alternatives](#alternatives)); this project focuses on the presentation layer and on a contract that any of them could feed.
+`calculadora-reforma-tributaria` is a front end for that answer: it takes a company's purchases and sales for a period, as computed by a backend that implements the [API contract](#backend-api), and shows where the burden goes up or down, product by product. Several open-source engines and simulators for the reform exist (see [Alternatives](#alternatives)); this project focuses on the presentation layer and on a contract that any of them could feed.
 
 ## Who is it for
 
 - **Accountants and finance teams** of companies in the *lucro real* or *lucro presumido* regimes who need to see the reform's effect on their own purchases and sales, not on a generic example.
 - **Developers of tax-calculation backends** who want a tested, documented front end instead of building one: implement the JSON contract and point the app at it with `VITE_API_URL`.
-- **Anyone exploring the reform** — the [live demo](https://grupomg-tech.github.io/dashreforma/) runs on fictional data and needs no setup.
+- **Anyone exploring the reform** — the [live demo](https://grupomg-tech.github.io/calculadora-reforma-tributaria/) runs on fictional data and needs no setup.
 
 ## Features
 
@@ -48,19 +48,19 @@ Constitutional Amendment 132/2023 replaces PIS, COFINS, ICMS, ISS and part of IP
 
 ## Status
 
-Early stage, actively maintained by a single developer. The dashboard is functional; the data mapping, the demo model, the page and the main components are covered by 43 tests (about 90% statement coverage over `src/`, with an 80% threshold enforced in CI). Dependencies are kept current by Dependabot and audited weekly. The UI is Portuguese-only for now. See the [roadmap](#roadmap) and the [open issues](https://github.com/grupomg-tech/dashreforma/issues); contributions are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md).
+Early stage, actively maintained by a single developer. The dashboard is functional; the data mapping, the demo model, the page and the main components are covered by 70 tests (about 92% statement coverage over `src/`, with an 80% threshold enforced in CI). Dependencies are kept current by Dependabot and audited weekly. The UI is Portuguese-only for now. See the [roadmap](#roadmap) and the [open issues](https://github.com/grupomg-tech/calculadora-reforma-tributaria/issues); contributions are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Tech stack
 
-React 18 · TypeScript (strict) · Vite 8 · Tailwind CSS · shadcn/ui (Radix) · Recharts · Framer Motion · Vitest + Testing Library
+React 19 · TypeScript (strict) · Vite 8 · Tailwind CSS · shadcn/ui (Radix) · Recharts · Framer Motion · Vitest + Testing Library
 
 ## Getting started
 
 Requires Node.js 20.19+ (CI uses 22) and npm.
 
 ```sh
-git clone https://github.com/grupomg-tech/dashreforma.git
-cd dashreforma
+git clone https://github.com/grupomg-tech/calculadora-reforma-tributaria.git
+cd calculadora-reforma-tributaria
 npm ci
 npm run dev      # dev server on http://localhost:8080
 ```
@@ -191,7 +191,7 @@ src/
 
 ## Alternatives
 
-The ecosystem around the reform is young and growing fast. Projects found in September 2026 that overlap with `dashreforma` (listed for orientation, not as a comparison of quality):
+The ecosystem around the reform is young and growing fast. Projects found in September 2026 that overlap with `calculadora-reforma-tributaria` (listed for orientation, not as a comparison of quality):
 
 | Project | What it is |
 | --- | --- |
@@ -204,7 +204,7 @@ The ecosystem around the reform is young and growing fast. Projects found in Sep
 | [mickbap/tribultz](https://github.com/mickbap/tribultz) | Compliance and simulation platform with an executive dashboard. |
 | Free web simulators (Portal Contábeis, Conta Azul, BuscadorNCM, Tributos.io) | Closed-source calculators, some per NCM. |
 
-`dashreforma` differs in scope rather than in ambition: it is only the presentation layer, MIT-licensed, with a public demo, a documented JSON contract, tests and CI. A calculation engine from the list above could feed it by implementing the contract. If you maintain one of these projects and something here is inaccurate, open an issue.
+`calculadora-reforma-tributaria` differs in scope rather than in ambition: it is only the presentation layer, MIT-licensed, with a public demo, a documented JSON contract, tests and CI. A calculation engine from the list above could feed it by implementing the contract. If you maintain one of these projects and something here is inaccurate, open an issue.
 
 ## Contributing
 
@@ -226,8 +226,8 @@ This is a simulation tool. Results depend entirely on the data and rates supplie
 
 ## Resumo em português
 
-O `dashreforma` é um painel (React + TypeScript) que compara a apuração tributária de uma empresa no **sistema atual** com a apuração simulada na **Reforma Tributária** (IBS, CBS e Imposto Seletivo). Permite ajustar as alíquotas, filtrar por empresa e período, ver a variação de débitos, créditos, resultado e carga tributária, analisar os produtos mais comprados e mais vendidos, e exportar a simulação em CSV para planilha.
+O `calculadora-reforma-tributaria` é um painel (React + TypeScript) que compara a apuração tributária de uma empresa no **sistema atual** com a apuração simulada na **Reforma Tributária** (IBS, CBS e Imposto Seletivo). Permite ajustar as alíquotas, filtrar por empresa e período, ver a variação de débitos, créditos, resultado e carga tributária, analisar os produtos mais comprados e mais vendidos, e exportar a simulação em CSV para planilha.
 
-**Demo online:** <https://grupomg-tech.github.io/dashreforma/> (dados fictícios; altere as alíquotas e clique em *Simular*).
+**Demo online:** <https://grupomg-tech.github.io/calculadora-reforma-tributaria/> (dados fictícios; altere as alíquotas e clique em *Simular*).
 
 Este repositório contém apenas o front end; os dados vêm de uma API própria (veja [Backend API](#backend-api)). Para rodar sem backend, abra a aplicação com `?demo=1`. Projeto em estágio inicial — contribuições são bem-vindas. Ferramenta de simulação: não substitui orientação tributária profissional.

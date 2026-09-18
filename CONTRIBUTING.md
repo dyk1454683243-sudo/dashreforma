@@ -4,15 +4,15 @@ Thanks for taking the time to contribute. Issues and pull requests are welcome i
 
 ## Reporting bugs and ideas
 
-Open an [issue](https://github.com/grupomg-tech/dashreforma/issues/new/choose) using the bug or feature template. For bugs, say what you did, what you expected and what happened; a screenshot and the browser console output help a lot. If the bug depends on your backend's response, paste a **redacted** sample of the JSON — never real company data.
+Open an [issue](https://github.com/grupomg-tech/calculadora-reforma-tributaria/issues/new/choose) using the bug or feature template. For bugs, say what you did, what you expected and what happened; a screenshot and the browser console output help a lot. If the bug depends on your backend's response, paste a **redacted** sample of the JSON — never real company data.
 
-Issues labelled [`good first issue`](https://github.com/grupomg-tech/dashreforma/labels/good%20first%20issue) are scoped for newcomers; [`help wanted`](https://github.com/grupomg-tech/dashreforma/labels/help%20wanted) marks work the maintainer would like help with.
+Issues labelled [`good first issue`](https://github.com/grupomg-tech/calculadora-reforma-tributaria/labels/good%20first%20issue) are scoped for newcomers; [`help wanted`](https://github.com/grupomg-tech/calculadora-reforma-tributaria/labels/help%20wanted) marks work the maintainer would like help with.
 
 ## Development setup
 
 ```sh
-git clone https://github.com/grupomg-tech/dashreforma.git
-cd dashreforma
+git clone https://github.com/grupomg-tech/calculadora-reforma-tributaria.git
+cd calculadora-reforma-tributaria
 npm ci
 npm run dev
 ```

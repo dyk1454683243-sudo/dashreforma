@@ -10,7 +10,10 @@ All notable changes to this project are documented here. The format follows
 - CSV export of the loaded report: header button "Exportar CSV" (enabled when
   a report is present) downloads one row per purchase and sale product, with
   the `Produto` columns plus `tipo`, `;` as separator, `,` as decimal mark and
-  a UTF-8 BOM so Excel opens it correctly (#17).
+  a UTF-8 BOM so Excel opens it correctly (#17, contributed by @dyk1454683243-sudo
+  in #30). File name now follows the filters
+  (`calculadora-reforma-tributaria_<empresa>_<inicio>_<fim>.csv`) and lines end
+  with CRLF (RFC 4180).
 - Link to the repository in the dashboard header and an English line in the
   demo banner pointing to the source and the API contract.
 - README sections "Who is it for", "What it does not do" and "Alternatives"
@@ -24,8 +27,19 @@ All notable changes to this project are documented here. The format follows
 
 ### Changed
 
+- **Project renamed** from `dashreforma` to `calculadora-reforma-tributaria`
+  ("Calculadora Reforma Tributária"): repository URL, demo URL
+  (`grupomg-tech.github.io/calculadora-reforma-tributaria/`), package name,
+  page title, header and CSV file names. GitHub redirects the old repository
+  URL; the old Pages URL does not. The README states that the project is not
+  affiliated with the Receita Federal's official calculator.
 - README "Why" no longer claims that open tooling is scarce; the project is
   positioned as a presentation layer over a documented contract.
+
+### Removed
+
+- Template leftovers: `lovable-tagger` and its Vite plugin, `.lovable/plan.md`
+  and `public/placeholder.svg`.
 
 ### Fixed
 
@@ -97,6 +111,6 @@ First tagged release.
 - Page title and metadata now describe the project instead of the template.
 - Dashboard components are fully typed (no `any`).
 
-[Unreleased]: https://github.com/grupomg-tech/dashreforma/compare/v0.1.1...HEAD
-[0.1.1]: https://github.com/grupomg-tech/dashreforma/compare/v0.1.0...v0.1.1
-[0.1.0]: https://github.com/grupomg-tech/dashreforma/releases/tag/v0.1.0
+[Unreleased]: https://github.com/grupomg-tech/calculadora-reforma-tributaria/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/grupomg-tech/calculadora-reforma-tributaria/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/grupomg-tech/calculadora-reforma-tributaria/releases/tag/v0.1.0

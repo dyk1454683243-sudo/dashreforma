@@ -27,7 +27,9 @@ export const CSV_COLUMNS = ["tipo", ...PRODUTO_COLUMNS] as const;
 
 export const CSV_SEPARATOR = ";";
 export const CSV_BOM = "\uFEFF";
-export const CSV_FILENAME = "simulacao-reforma.csv";
+export const CSV_FILENAME = "calculadora-reforma-tributaria.csv";
+/** RFC 4180 line ending; Excel and LibreOffice accept it on every platform. */
+export const CSV_EOL = "\r\n";
 
 const NEEDS_QUOTES = /[;"\r\n]/;
 
@@ -39,7 +41,18 @@ export const toCsv = (report: DadosRelatorio): string => {
   const rows = [CSV_COLUMNS.join(CSV_SEPARATOR)];
   appendProducts(rows, report.entradas?.produtos, "compra");
   appendProducts(rows, report.saidas?.produtos, "venda");
-  return `${CSV_BOM}${rows.join("\n")}\n`;
+  return `${CSV_BOM}${rows.join(CSV_EOL)}${CSV_EOL}`;
+};
+
+/**
+ * File name derived from the current filters, e.g.
+ * `calculadora-reforma-tributaria_42_2026-01_2026-06.csv`; empty parts are skipped.
+ */
+export const csvFileName = (parts: { empresa?: string; periodoInicial?: string; periodoFinal?: string }): string => {
+  const safe = [parts.empresa, parts.periodoInicial, parts.periodoFinal]
+    .filter((p): p is string => Boolean(p))
+    .map((p) => p.replace(/[^\w-]+/g, "_"));
+  return ["calculadora-reforma-tributaria", ...safe].join("_") + ".csv";
 };
 
 /** Triggers a browser download of a CSV string. */
