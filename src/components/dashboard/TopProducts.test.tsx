@@ -72,6 +72,15 @@ describe("<TopProducts />", () => {
     expect(within(dialog).getByText("Icms")).toBeInTheDocument();
   });
 
+  it("keeps the full product name available for the tooltip while the axis label is truncated", () => {
+    const longo = produto(1, { descricao: "Refrigerante cola garrafa retornável 2 litros" });
+    render(<TopProducts produtosEntrada={[]} produtosSaida={[longo]} />);
+
+    // The card shows the full name; the chart row (rendered by recharts from `name`) uses the 18-char cut.
+    expect(screen.getByTitle("Refrigerante cola garrafa retornável 2 litros")).toBeInTheDocument();
+    expect(screen.getByTitle("Refrigerante cola garrafa retornável 2 litros")).toHaveTextContent("Refrigerante cola garrafa retornável 2 litros");
+  });
+
   it("uses the purchases tab for inbound products", () => {
     render(<TopProducts produtosEntrada={[produto(5)]} produtosSaida={[]} />);
 

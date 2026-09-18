@@ -95,9 +95,9 @@ const TopProducts = ({ produtosEntrada, produtosSaida }: TopProductsProps) => {
 const ProductRankingChart = ({ products, tipo, onProductClick }: { products: Produto[]; tipo: Tipo; onProductClick: (p: Produto, t: Tipo) => void }) => {
   const chartData = products.map((p) => ({
     name: productName(p).substring(0, 18),
+    fullName: productName(p),
     "Valor Atual": p.valor_total ?? 0,
     "Valor Reforma": p.total_reforma ?? 0,
-    produto: p,
   }));
 
   const gradientId = tipo === "venda" ? "gradVenda" : "gradCompra";
@@ -130,6 +130,7 @@ const ProductRankingChart = ({ products, tipo, onProductClick }: { products: Pro
             <YAxis dataKey="name" type="category" width={140} tick={{ fontSize: 11, fontWeight: 500 }} />
             <Tooltip
               formatter={tooltipCurrency}
+              labelFormatter={(label, payload) => (payload?.[0]?.payload as { fullName?: string } | undefined)?.fullName ?? String(label)}
               contentStyle={{ borderRadius: 12, border: "none", boxShadow: "0 10px 40px rgba(0,0,0,0.12)" }}
             />
             <Bar dataKey="Valor Atual" fill={`url(#${gradientId}Atual)`} radius={[0, 6, 6, 0]} barSize={16}

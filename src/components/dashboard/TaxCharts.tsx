@@ -187,6 +187,13 @@ const GaugeCard = ({ title, description, atualValue, reformaValue }: {
   );
 };
 
+// Recharts 3 expects the `label` render prop to return an element (a string is no longer drawn).
+const renderSliceLabel = (props: { x?: number; y?: number; textAnchor?: string; name?: string; percent?: number }) => (
+  <text x={props.x} y={props.y} textAnchor={props.textAnchor as "start" | "middle" | "end" | undefined} dominantBaseline="central" fill="#334155" fontSize={11} fontWeight={500}>
+    {`${props.name ?? ""} ${((props.percent ?? 0) * 100).toFixed(1)}%`}
+  </text>
+);
+
 const DonutCard = ({ title, data }: { title: string; data: { name: string; value: number }[] }) => {
   const total = data.reduce((s, d) => s + d.value, 0);
 
@@ -208,7 +215,7 @@ const DonutCard = ({ title, data }: { title: string; data: { name: string; value
             </defs>
             <Pie data={data} cx="50%" cy="50%" outerRadius={100} innerRadius={55} dataKey="value"
               paddingAngle={3} cornerRadius={6}
-              label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(1)}%`}
+              label={renderSliceLabel}
               labelLine={{ strokeWidth: 2 }}
             >
               {data.map((_, i) => (
