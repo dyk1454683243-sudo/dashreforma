@@ -17,6 +17,13 @@ All notable changes to this project are documented here. The format follows
 - README "Why" no longer claims that open tooling is scarce; the project is
   positioned as a presentation layer over a documented contract.
 
+### Fixed
+
+- Donut slice labels were not drawn after the Recharts 3 upgrade; the label
+  render prop now returns an SVG element (#23).
+- The ranking chart tooltip shows the full product name instead of the
+  18-character axis label (#24).
+
 ## [0.1.1] - 2026-09-17
 
 Maintenance release: security, tests, documentation and dependency currency.
