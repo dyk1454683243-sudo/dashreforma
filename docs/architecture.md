@@ -32,9 +32,10 @@ FilterPanel ──(empresa, período, alíquotas)──▶ Index.fetchData
 | --- | --- | --- |
 | `src/lib/api-types.ts` | TypeScript contract of the report endpoint. Every block is optional; the UI hides what is missing. | type check |
 | `src/lib/report.ts` | Pure functions that turn the report into chart rows and headline deltas. No React, no I/O. | `report.test.ts` |
+| `src/lib/export.ts` | `toCsv(report)` serialises purchases and sales as a pt-BR CSV (`;` / `,` / UTF-8 BOM). `downloadCsv` triggers the browser download. | `export.test.ts` |
 | `src/lib/demo.ts` | Fictional catalogue and a simplified tax model that produce a complete `DadosRelatorio` for any set of rates. | `demo.test.ts` |
 | `src/lib/config.ts` | Runtime configuration from `VITE_*` variables and the `?demo` flag. | `Index.test.tsx` |
-| `src/pages/Index.tsx` | State (filters, data, loading, error, demo), fetching, auto refresh, page layout. | `Index.test.tsx` |
+| `src/pages/Index.tsx` | State (filters, data, loading, error, demo), fetching, auto refresh, page layout, CSV export button. | `Index.test.tsx` |
 | `src/components/dashboard/FilterPanel.tsx` | Controlled form for company, period and rates. | `FilterPanel.test.tsx` |
 | `src/components/dashboard/ImpactOverview.tsx` | Impact cards, summary cards and header badges. | `Index.test.tsx` (rendering) |
 | `src/components/dashboard/TopProducts.tsx` | Ranking chart, product cards and the detail dialog. | `TopProducts.test.tsx` |

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, ExternalLink, FlaskConical } from "lucide-react";
+import { AlertTriangle, Download, ExternalLink, FlaskConical } from "lucide-react";
 import FilterPanel from "@/components/dashboard/FilterPanel";
 import { ImpactCards, SummaryCards, ImpactBadge } from "@/components/dashboard/ImpactOverview";
 import TopProducts from "@/components/dashboard/TopProducts";
@@ -11,6 +11,7 @@ import TaxCharts from "@/components/dashboard/TaxCharts";
 import type { DadosRelatorio } from "@/lib/api-types";
 import { API_URL, REPO_URL, isDemoMode } from "@/lib/config";
 import { buildDemoReport } from "@/lib/demo";
+import { downloadCsv, toCsv } from "@/lib/export";
 import {
   computeImpactDelta, deriveBurdenBar, deriveComparativo, derivePieData, parseApiResponse,
 } from "@/lib/report";
@@ -100,20 +101,30 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       {/* Header */}
       <header className="bg-white/70 backdrop-blur-md border-b shadow-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#4e6ae9] to-[#764ba2] bg-clip-text text-transparent">
               Dashboard Reforma Tributária
             </h1>
             <p className="text-sm text-muted-foreground">Análise comparativa de impacto fiscal • Interativo</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             {data && impactoDelta && (
               <div className="hidden md:flex items-center gap-3">
                 <ImpactBadge label="Impacto Carga" value={impactoDelta.carga} suffix="pp" />
                 <ImpactBadge label="Impacto Resultado" value={impactoDelta.resultado} prefix="R$" />
               </div>
             )}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={!data}
+              onClick={() => { if (data) downloadCsv(toCsv(data)); }}
+              className="bg-white/80"
+            >
+              <Download className="h-4 w-4" /> Exportar CSV
+            </Button>
             <a
               href={REPO_URL}
               target="_blank"

@@ -7,6 +7,10 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- CSV export of the loaded report: header button "Exportar CSV" (enabled when
+  a report is present) downloads one row per purchase and sale product, with
+  the `Produto` columns plus `tipo`, `;` as separator, `,` as decimal mark and
+  a UTF-8 BOM so Excel opens it correctly (#17).
 - Link to the repository in the dashboard header and an English line in the
   demo banner pointing to the source and the API contract.
 - README sections "Who is it for", "What it does not do" and "Alternatives"

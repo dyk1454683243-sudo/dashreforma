@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import Index from "./Index";
 import relatorio from "@/test/fixtures/relatorio.json";
+import * as exportModule from "@/lib/export";
 
 // Recharts measures its container; jsdom has no layout, so ResizeObserver must exist.
 class ResizeObserverStub {
@@ -100,6 +101,34 @@ describe("<Index />", () => {
       const after = screen.getByText("Reforma Tributária").closest("div")!.parentElement!.textContent;
       expect(after).not.toBe(before);
     });
+  });
+
+  it("keeps Exportar CSV disabled until a report is loaded", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse("nf", 404)));
+
+    render(<Index />);
+
+    await waitFor(() => expect(screen.getByText(/Erro HTTP 404/)).toBeInTheDocument());
+    expect(screen.getByRole("button", { name: /Exportar CSV/ })).toBeDisabled();
+  });
+
+  it("downloads a CSV from the header in demo mode", async () => {
+    vi.stubGlobal("fetch", vi.fn());
+    setSearch("?demo=1");
+    const downloadSpy = vi.spyOn(exportModule, "downloadCsv").mockImplementation(() => undefined);
+
+    render(<Index />);
+
+    const button = await screen.findByRole("button", { name: /Exportar CSV/ });
+    expect(button).toBeEnabled();
+    fireEvent.click(button);
+
+    expect(downloadSpy).toHaveBeenCalledTimes(1);
+    const csv = downloadSpy.mock.calls[0][0];
+    expect(csv.startsWith("\uFEFF")).toBe(true);
+    expect(csv).toContain("tipo;descricao;");
+    expect(csv).toContain("compra;Arroz branco tipo 1 5kg;");
+    expect(csv).toContain("venda;");
   });
 
   it("links to the repository from the header and from the demo banner", async () => {
