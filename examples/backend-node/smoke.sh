@@ -9,15 +9,19 @@ URL="http://${HOST}:${PORT}/dashboards/api/graficos/dados-relatorio/"
 
 npx --yes tsx server.ts &
 pid=$!
-cleanup() { kill "$pid" 2>/dev/null || true; }
+cleanup() {
+  kill "$pid" 2>/dev/null || true
+  wait "$pid" 2>/dev/null || true
+  pkill -f "examples/backend-node/server.ts" 2>/dev/null || true
+}
 trap cleanup EXIT
 
 body=""
-for _ in $(seq 1 40); do
-  if body="$(curl -sfS "$URL")"; then
+for _ in $(seq 1 50); do
+  if body="$(curl -sf "$URL" 2>/dev/null)"; then
     break
   fi
-  sleep 0.15
+  sleep 0.2
 done
 
 if [[ -z "$body" ]]; then
