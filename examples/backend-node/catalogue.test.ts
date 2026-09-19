@@ -1,10 +1,11 @@
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { buildDemoReport } from "../../src/lib/demo";
 import { validateReport } from "../../src/lib/report";
 import { buildReportFromCsv, parseAliquotas, parseProductCsv } from "./catalogue";
 
-const csv = readFileSync(new URL("./products.csv", import.meta.url), "utf8");
+const csv = readFileSync(join(process.cwd(), "examples/backend-node/products.csv"), "utf8");
 const RATES = { ibs: 18.5, cbs: 8.5, is: 0 };
 
 describe("parseProductCsv", () => {

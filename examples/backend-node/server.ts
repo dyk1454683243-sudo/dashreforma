@@ -36,8 +36,14 @@ const sendJson = (res: http.ServerResponse, status: number, payload: unknown) =>
   });
 };
 
-export const loadDefaultCsv = (): string =>
-  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "products.csv"), "utf8");
+export const loadDefaultCsv = (): string => {
+  const besideModule = join(dirname(fileURLToPath(import.meta.url)), "products.csv");
+  try {
+    return readFileSync(besideModule, "utf8");
+  } catch {
+    return readFileSync(join(process.cwd(), "examples/backend-node/products.csv"), "utf8");
+  }
+};
 
 export const createRequestListener = (csv: string = loadDefaultCsv()): http.RequestListener => {
   return (req, res) => {
