@@ -98,7 +98,7 @@ const PrintTopTables = ({ compras, vendas }: { compras: Produto[]; vendas: Produ
   <section
     className="hidden"
     data-print="only"
-    data-print-layout="grid"
+    data-print-layout="stack"
     aria-label="Tabelas top 10 para impressão"
   >
     <PrintProductTable title="Top 10 — Vendas" products={vendas} />

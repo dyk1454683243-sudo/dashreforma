@@ -49,7 +49,7 @@ Constitutional Amendment 132/2023 replaces PIS, COFINS, ICMS, ISS and part of IP
 
 ## Status
 
-Early stage, actively maintained by a single developer. The dashboard is functional; the data mapping, the demo model, the page and the main components are covered by 70 tests (about 92% statement coverage over `src/`, with an 80% threshold enforced in CI). Dependencies are kept current by Dependabot and audited weekly. The UI is Portuguese-only for now. See the [roadmap](#roadmap) and the [open issues](https://github.com/grupomg-tech/calculadora-reforma-tributaria/issues); contributions are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md).
+Early stage, actively maintained by a single developer. The dashboard is functional; the data mapping, the demo model, the page and the main components are covered by 79 tests (about 93% statement coverage over `src/`, with an 80% threshold enforced in CI). Dependencies are kept current by Dependabot and audited weekly. The UI is Portuguese-only for now. See the [roadmap](#roadmap) and the [open issues](https://github.com/grupomg-tech/calculadora-reforma-tributaria/issues); contributions are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Tech stack
 
